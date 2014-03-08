@@ -6,6 +6,7 @@
 #include <iostream>
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
+#include "Zoomer.hpp"
 
 class ViewMode : public AbstractMode{
 public:
@@ -40,17 +41,17 @@ private:
       * Main window.
       */
      sf::RenderWindow window;
-
-     /**
-      * Main view.
-      */
-     sf::View mainView;
-
+     
      /**
       * Size of window (x,y).
       */
      sf::Vector2u windowSize;
 
+     /**
+      * Responsible for zooming around, getting views.
+      */
+     Zoomer zoomer;
+     
      /**
       * Main texture used as background.
       */

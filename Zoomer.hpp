@@ -11,18 +11,44 @@
 class Zoomer{
 public:
      /**
+      * Construct a default Zoomer.
+      */
+     Zoomer();
+
+     /**
       * Construct
       * @param center Center view should start on.
       * @param size Starting view size.
+      * @param framerate Framerate in frames per second.
       */
      Zoomer(sf::Vector2f center, sf::Vector2f size, unsigned int framerate=60);
 
+     /**
+      * Initialize a zoomer.
+      * @param center Center view should start on.
+      * @param size Starting view size.
+      * @param framerate Framerate in frames per second.
+      */
+     void init(sf::Vector2f center, sf::Vector2f size, unsigned int framerate=60);
+     
      /**
       * Set the view center manually.
       * @param center Coordinates view should center on.
       */
      void setCenter(sf::Vector2f center);
 
+     /**
+      * Set the view size manually.
+      * @param size Size of the view.
+      */
+     void setSize(sf::Vector2f size);
+
+     /**
+      * Set the framerate.
+      * @param framerate Framerate in frames per second.
+      */
+     void setFramerate(unsigned int framerate);
+     
      /**
       * Get the current view.
       * @return Current sf::View
@@ -32,6 +58,7 @@ public:
      /**
       * Set the target the viewer should move to.
       * Generate a queue of moves to execute frame by frame.
+      * Clear the previous queue.
       * @param newTarget Target coordinates.
       * @param newSpeed Speed of translation in pixels per second.
       */
@@ -95,7 +122,7 @@ private:
      /**
       * Helper function to calculate translations.
       */
-     std::vector<float> calculateCoordinateTranslations(float finalPosition, float initialPosition);
+     std::vector<float> calculateCoordinateTranslations(float finalPosition, float initialPosition, float percentSmooth, unsigned int speed);
      
      /**
       * Helper function to sum a bunch of moves.

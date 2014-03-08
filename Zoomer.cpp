@@ -8,7 +8,22 @@
 
 #include "Zoomer.hpp"
 
+Zoomer::Zoomer()
+{
+     view.setCenter(sf::Vector2f(0,0));
+     view.setSize(sf::Vector2f(1,1));
+     fps = 60;
+}
+
 Zoomer::Zoomer(sf::Vector2f center, sf::Vector2f size, unsigned int framerate)
+{
+     //Initialize the view to starting position.
+     view.setCenter(center);
+     view.setSize(size);
+     fps = framerate;
+}
+
+void Zoomer::init(sf::Vector2f center, sf::Vector2f size, unsigned int framerate)
 {
      //Initialize the view to starting position.
      view.setCenter(center);
@@ -21,12 +36,22 @@ void Zoomer::setCenter(sf::Vector2f center)
      view.setCenter(center);
 }
 
+void Zoomer::setSize(sf::Vector2f size)
+{
+     view.setSize(size);
+}
+
+void Zoomer::setFramerate(unsigned int framerate)
+{
+     fps = framerate;
+}
+
 sf::View Zoomer::getCurrentView() const
 {
      return view;
 }
 
-void Zoomer::setAndCalculateTarget(sf::Vector2f newTarget, unsigned int newSpeed);
+void Zoomer::setAndCalculateTarget(sf::Vector2f newTarget, unsigned int newSpeed)
 {
      target = newTarget;
      previousView.setCenter(view.getCenter());
@@ -39,8 +64,8 @@ sf::View Zoomer::popNextView()
 {
      ViewMove nextMove = moveQueue.front();
      view.move(nextMove.translationVector);
-     view.rotate(nextMove.translationAngle);
-     view.setSize(nextMove.zoomVector);
+     view.rotate(nextMove.rotationAngle);
+     //view.setSize(nextMove.zoomVector);
      moveQueue.pop();
      return view;
 }
@@ -53,8 +78,8 @@ bool Zoomer::hasMoves()
 void Zoomer::calculateViewMoves(unsigned int speed)
 {
      //Calculate the translations.
-     std::vector<float> yMoves = calculateCoordinateTranslations(target.y - view.getCenter().y, 0.1);
-     std::vector<float> xMoves = calculateCoordinateTranslations(target.x - view.getCenter(.x, 0.1));
+     std::vector<float> yMoves = calculateCoordinateTranslations(target.y, view.getCenter().y, 0.1, speed);
+     std::vector<float> xMoves = calculateCoordinateTranslations(target.x, view.getCenter().x, 0.1, speed);
 
      //Fill in coordinates so that they match up.
      while (yMoves.size() > xMoves.size()){
@@ -72,11 +97,9 @@ void Zoomer::calculateViewMoves(unsigned int speed)
 
 std::vector<float> Zoomer::calculateCoordinateTranslations(float finalPosition,
 							   float initialPosition,
-							   float percentSmooth)
+							   float percentSmooth,
+							   unsigned int speed)
 {
-     //Used to calculate number of frames whose movement will be smoothed.
-     float percentSmooth = percentSmooth;
-     
      //Get the total distance we need to travel so we can do
      //calculations properly.
      int deltaY = int(round(finalPosition - initialPosition));
@@ -85,16 +108,28 @@ std::vector<float> Zoomer::calculateCoordinateTranslations(float finalPosition,
      //frame. If we're smoothing the movement curve, then this will be
      //the maximum instantaneous velocity.
      float dy = float(speed) / float(fps);
-
+     unsigned int totalYMovesNeeded = 0;
+     unsigned int smoothFrames = 0;
+     
      //Find how many total movement vectors we need to produce.
      if (std::abs(dy) > 1){
 	  dy = round(dy);
-	  unsigned int totalYMovesNeeded = std::abs(deltaY/dy);
-	  unsigned int smoothFrames = typedef unsigned int(percentSmooth * totalYMovesNeeded);
+	  totalYMovesNeeded = std::abs(deltaY/dy);
+	  smoothFrames =  (unsigned int)(percentSmooth * totalYMovesNeeded);
+     }
+     //Else we just move 1 pixel at a time, but over several frames.
+     else{
+	  dy = (deltaY/std::abs(deltaY));
+	  totalYMovesNeeded = std::abs(deltaY);
+	  smoothFrames = 0;
      }
 
      //Generate vector of y moves.
-     std::vector<float> yMoves(totalYMovesNeeded, dy);
+     //std::vector<float> yMoves(totalYMovesNeeded, dy);
+     std::vector<float> yMoves;
+     for (unsigned int ii = 0; ii < totalYMovesNeeded; ii++){
+	  yMoves.push_back(dy);
+     }
 
      //Smooth out the first segment.
      for (unsigned int ii=0; ii < smoothFrames; ii++){
@@ -102,14 +137,14 @@ std::vector<float> Zoomer::calculateCoordinateTranslations(float finalPosition,
      }
 
      //Figure out how many pixels we have to make up for.
-     float lostPixels = float(deltaY) - sumFloatVectorRange(yMoves, 0, smoothFrames);
+     float lostPixels = smoothFrames * dy - sumFloatVectorRange(yMoves, 0, smoothFrames);
 
      //Determine how many extra frames we need to move in the
      //middle. Multiply by 2 because the other end will lose pixels too.
      unsigned int additionalMovesNeeded = int(round(lostPixels / dy)) * 2;
 
      //Add the extra frames of movement.
-     for (unsigned int ii = 0; ii < additionalMovesNeeded; i++){
+     for (unsigned int ii = 0; ii < additionalMovesNeeded; ii++){
 	  yMoves.push_back(dy);
      }
 
@@ -118,7 +153,7 @@ std::vector<float> Zoomer::calculateCoordinateTranslations(float finalPosition,
 
      //Finally, smooth out the last part of the curve.
      for (unsigned int ii = totalYMovesNeeded - smoothFrames; ii < totalYMovesNeeded;ii++){
-	  yMoves[ii] = dy - round(float(ii)/float(smoothFrames));
+	  yMoves[ii] = dy - (round(float(ii) - smoothFrames)/float(smoothFrames));
      }
      return yMoves;
 }

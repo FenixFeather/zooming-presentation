@@ -9,10 +9,25 @@
 
 1394293039 c:\users\thomas\documents\program\sfmlapp\abstractmode.hpp
 
-1394293746 c:\users\thomas\documents\program\sfmlapp\viewmode.hpp
+1394314220 c:\users\thomas\documents\program\sfmlapp\viewmode.hpp
 	"AbstractMode.hpp"
 	<vector>
 	<iostream>
 	<SFML/Window.hpp>
 	<SFML/Graphics.hpp>
+	"Zoomer.hpp"
+
+1394315770 c:\users\thomas\documents\program\sfmlapp\zoomer.hpp
+	<SFML/Window.hpp>
+	<SFML/Graphics.hpp>
+	<queue>
+	<math.h>
+	<cmath>
+	<vector>
+
+1394319130 source:c:\users\thomas\documents\program\sfmlapp\viewmode.cpp
+	"ViewMode.hpp"
+
+1394318786 source:c:\users\thomas\documents\program\sfmlapp\zoomer.cpp
+	"Zoomer.hpp"
 
