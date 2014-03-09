@@ -158,9 +158,15 @@ private:
      float sumFloatVectorRange(std::vector<float> theVector, size_t start, size_t end);
 
      /**
+      * Helper function to calculate total degrees to rotate, to
+      * minimize rotation.
+      */
+     float calculateDeltaTheta();
+     
+     /**
       * Helper function to calculate how much to rotate each frame.
       */
-     float calculateDTheta(size_t frames, size_t currFrame);
+     float calculateDTheta(size_t frames, size_t currFrame, float degreesToTurn);
      
      /**
       * Helper function to calculate how much to resize each frame.

@@ -57,6 +57,9 @@ void ViewMode::run()
 	       }
 	       else if (event.type == sf::Event::MouseButtonPressed){
 		    if (event.mouseButton.button == sf::Mouse::Left){
+
+			 std::cout << zptFile.slides[currentSlideNumber].center.x << std::endl;
+			 std::cout << zptFile.slides[currentSlideNumber].center.y << std::endl;
 			 
 			 zoomer.setAndCalculateTarget(zptFile.slides[currentSlideNumber].center,
 						      zptFile.slides[currentSlideNumber].speed,
@@ -82,9 +85,9 @@ void ViewMode::run()
 	       window.setView(zoomer.popNextView());
 	       //sf::View theView = zoomer.getCurrentView();
 	       //std::cout << theView.getSize().x << "," << theView.getSize().y << std::endl;
-	       if (not zoomer.hasMoves()){
-		    zoomer.setCenter(sf::Vector2f(2360,4000));
-	       }
+	       // if (not zoomer.hasMoves()){
+	       // 	    zoomer.setCenter(sf::Vector2f(2360,4000));
+	       // }
 	  }
 	  else{
 	       window.setView(zoomer.getCurrentView());

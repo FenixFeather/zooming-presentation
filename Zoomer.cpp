@@ -87,6 +87,7 @@ sf::View Zoomer::popNextView()
 	  while (not moveQueue.empty()){
 	       moveQueue.pop();
 	  }
+	  view.setCenter(target);
      }
      else{
 	  view.move(nextMove.translationVector);
@@ -117,9 +118,14 @@ void Zoomer::calculateViewMoves(unsigned int speed)
 	  yMoves.push_back(0.);
      }
 
+     //Calculate which way we should turn.
+     float deltaTheta = calculateDeltaTheta();
+     
      //Push moves onto the queue.
      for (size_t ii = 0; ii < yMoves.size(); ii++){
-	  moveQueue.push(ViewMove(sf::Vector2f(xMoves[ii], yMoves[ii]), calculateDTheta(yMoves.size(), ii), calculateNewSize(yMoves.size(), ii)));
+	  moveQueue.push(ViewMove(sf::Vector2f(xMoves[ii], yMoves[ii]),
+				  calculateDTheta(yMoves.size(), ii, deltaTheta),
+				  calculateNewSize(yMoves.size(), ii)));
      }
 }
 
@@ -187,9 +193,16 @@ std::vector<float> Zoomer::calculateCoordinateTranslations(float finalPosition,
      return yMoves;
 }
 
-float Zoomer::calculateDTheta(size_t frames, size_t currFrame)
+float Zoomer::calculateDeltaTheta()
 {
-     return targetAngle / frames;
+     float degreesToTurn = targetAngle - previousView.getRotation();
+     degreesToTurn = std::abs(degreesToTurn) > 180 ? 360 + degreesToTurn : degreesToTurn;
+     return degreesToTurn;
+}
+
+float Zoomer::calculateDTheta(size_t frames, size_t currFrame, float degreesToTurn)
+{
+     return degreesToTurn / frames;
 }
 
 float Zoomer::sumFloatVectorRange(std::vector<float> theVector, size_t start, size_t end)
