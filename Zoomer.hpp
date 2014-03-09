@@ -7,6 +7,7 @@
 #include <math.h>
 #include <cmath>
 #include <vector>
+#include <iostream>
 
 class Zoomer{
 public:
@@ -61,8 +62,10 @@ public:
       * Clear the previous queue.
       * @param newTarget Target coordinates.
       * @param newSpeed Speed of translation in pixels per second.
+      * @param percent The percentage of the translation animation
+      * that should be smoothed.
       */
-     void setAndCalculateTarget(sf::Vector2f newTarget, unsigned int newSpeed);
+     void setAndCalculateTarget(sf::Vector2f newTarget, unsigned int newSpeed, float percent = 0., float newAngle = 0.);
 
      /**
       * Get the next view in the zoomer's queue, presumably to update
@@ -89,14 +92,25 @@ private:
      sf::View previousView;
      
      /**
-      * Current position of target.
+      * Position of target.
       */
      sf::Vector2f target;
 
      /**
+      * Target angle.
+      */
+     float targetAngle;
+     
+     /**
       * Holds framerate in FPS
       */
      unsigned int fps;
+
+     /**
+      * How much of the beginning and ending of the translation
+      * animation should be smoothed, as a percentage.
+      */
+     float percentSmooth;
      
      /**
       * Defines a move for the view, consisting of a translation,
@@ -122,12 +136,17 @@ private:
      /**
       * Helper function to calculate translations.
       */
-     std::vector<float> calculateCoordinateTranslations(float finalPosition, float initialPosition, float percentSmooth, unsigned int speed);
+     std::vector<float> calculateCoordinateTranslations(float finalPosition, float initialPosition, unsigned int speed);
      
      /**
       * Helper function to sum a bunch of moves.
       */
      float sumFloatVectorRange(std::vector<float> theVector, size_t start, size_t end);
+
+     /**
+      * Helper function to calculate how much to rotate each frame.
+      */
+     float calculateDTheta(size_t frames, size_t currFrame);
      
      /**
       * Holds ViewMoves.

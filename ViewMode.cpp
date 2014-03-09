@@ -39,7 +39,7 @@ void ViewMode::run()
 	       }
 	       else if (event.type == sf::Event::MouseButtonPressed){
 		    if (event.mouseButton.button == sf::Mouse::Left){
-			 zoomer.setAndCalculateTarget(sf::Vector2f(2360,4000), 500);
+			 zoomer.setAndCalculateTarget(sf::Vector2f(2360,4000), 1500, 0.3, -45.);
 		    }
 	       }
 	  }
@@ -50,8 +50,11 @@ void ViewMode::run()
 
 	  if (zoomer.hasMoves()){
 	       window.setView(zoomer.popNextView());
-	       sf::View theView = zoomer.getCurrentView();
-	       std::cout << theView.getSize().x << "," << theView.getSize().y << std::endl;
+	       //sf::View theView = zoomer.getCurrentView();
+	       //std::cout << theView.getSize().x << "," << theView.getSize().y << std::endl;
+	       if (not zoomer.hasMoves()){
+		    zoomer.setCenter(sf::Vector2f(2360,4000));
+	       }
 	  }
 	  else{
 	       window.setView(zoomer.getCurrentView());
