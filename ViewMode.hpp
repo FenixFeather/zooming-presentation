@@ -7,13 +7,15 @@
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 #include "Zoomer.hpp"
+#include "ZptReader.hpp"
 
 class ViewMode : public AbstractMode{
 public:
      /**
       * Constructor for ViewMode. Initializes member variables.
+      * @param filePath The path to the xml file.
       */
-     ViewMode(std::string);
+     ViewMode(std::string filePath);
      
      /**
       * Create the window, sets video mode, loads picture.
@@ -71,7 +73,16 @@ private:
       * Event handler.
       */
      sf::Event event;
-     
+
+     /**
+      * File handler.
+      */
+     zpt::ZptReader zptFile;
+
+     /**
+      * Keeps track of the current slide number.
+      */
+     unsigned int currentSlideNumber;
 };
 
 

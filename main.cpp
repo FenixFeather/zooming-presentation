@@ -11,7 +11,7 @@
 
 int main()
 {
-     AbstractMode* viewWindow = new ViewMode("revolucionsmall.png");
+     AbstractMode* viewWindow = new ViewMode("test.xml");
      viewWindow->init();
      viewWindow->run();
      delete viewWindow;

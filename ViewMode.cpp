@@ -8,14 +8,22 @@
 
 #include "ViewMode.hpp"
 
-ViewMode::ViewMode(std::string imagePath = "")
+ViewMode::ViewMode(std::string filePath = "")
 {
+     if(not zptFile.parseFile(filePath)){
+	  std::cout << "Error opening file." << std::endl;
+     }
      modes = sf::VideoMode::getFullscreenModes();
-     window.create(modes[0], "Presentation",sf::Style::Fullscreen);
-     //window.create(modes[0], "Presentation");
+     if (zptFile.presentationInfo.prefSize.x == modes[0].width and zptFile.presentationInfo.prefSize.y == modes[0].height){
+	  window.create(modes[0], filePath, sf::Style::Fullscreen);
+     }
+     else{
+	  window.create(sf::VideoMode((unsigned int)zptFile.presentationInfo.prefSize.x, (unsigned int)zptFile.presentationInfo.prefSize.y), filePath);
+     }
+     
      windowSize = window.getSize();
-     window.setFramerateLimit(60);
-     backgroundPath = imagePath;
+     window.setFramerateLimit(zptFile.presentationInfo.framerate);
+     backgroundPath = zptFile.presentationInfo.imagePath;
 }
 
 bool ViewMode::init()
@@ -25,8 +33,15 @@ bool ViewMode::init()
 	  return false;
      }
      backgroundTexture.setSmooth(true);
-     zoomer.init(sf::Vector2f(2360,3000), sf::Vector2f(windowSize.x, windowSize.y));
+     //zoomer.init(sf::Vector2f(2360,3000), sf::Vector2f(windowSize.x,
+     //windowSize.y));
+     
+     zoomer.init(zptFile.slides[0].center, zptFile.slides[0].size);
+     
      background.setTexture(backgroundTexture);
+
+     currentSlideNumber = 0;
+     
      return true;
 }
 
@@ -40,8 +55,19 @@ void ViewMode::run()
 	       }
 	       else if (event.type == sf::Event::MouseButtonPressed){
 		    if (event.mouseButton.button == sf::Mouse::Left){
-			 sf::Vector2f currentSize = zoomer.getCurrentView().getSize();
-			 zoomer.setAndCalculateTarget(sf::Vector2f(2360,4000), 1500, 0.3, -45., sf::Vector2f(currentSize.x * 0.5, currentSize.y * 0.5));
+			 
+			 zoomer.setAndCalculateTarget(zptFile.slides[currentSlideNumber].center,
+						      zptFile.slides[currentSlideNumber].speed,
+						      zptFile.slides[currentSlideNumber].percent,
+						      zptFile.slides[currentSlideNumber].angle,
+						      zptFile.slides[currentSlideNumber].size);
+			 
+			 //sf::Vector2f currentSize = zoomer.getCurrentView().getSize();
+			 //zoomer.setAndCalculateTarget(sf::Vector2f(2360,4000),
+			 //1500, 0.3, -45., sf::Vector2f(currentSize.x
+			 //* 0.5, currentSize.y * 0.5));
+
+			 currentSlideNumber = (currentSlideNumber + 1) % (zptFile.slides.size());
 		    }
 	       }
 	  }
@@ -49,7 +75,7 @@ void ViewMode::run()
 	  window.clear(sf::Color::Black);
 	  
 	  window.draw(background);
-
+	  
 	  if (zoomer.hasMoves()){
 	       window.setView(zoomer.popNextView());
 	       //sf::View theView = zoomer.getCurrentView();

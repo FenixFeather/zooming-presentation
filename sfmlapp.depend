@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1394293577 source:c:\users\thomas\documents\program\sfmlapp\main.cpp
+1394349010 source:c:\users\thomas\documents\program\sfmlapp\main.cpp
 	<iostream>
 	<vector>
 	<SFML/Window.hpp>
@@ -9,13 +9,14 @@
 
 1394293039 c:\users\thomas\documents\program\sfmlapp\abstractmode.hpp
 
-1394314220 c:\users\thomas\documents\program\sfmlapp\viewmode.hpp
+1394349067 c:\users\thomas\documents\program\sfmlapp\viewmode.hpp
 	"AbstractMode.hpp"
 	<vector>
 	<iostream>
 	<SFML/Window.hpp>
 	<SFML/Graphics.hpp>
 	"Zoomer.hpp"
+	"ZptReader.hpp"
 
 1394328299 c:\users\thomas\documents\program\sfmlapp\zoomer.hpp
 	<SFML/Window.hpp>
@@ -26,9 +27,29 @@
 	<vector>
 	<iostream>
 
-1394326725 source:c:\users\thomas\documents\program\sfmlapp\viewmode.cpp
+1394348313 source:c:\users\thomas\documents\program\sfmlapp\viewmode.cpp
 	"ViewMode.hpp"
 
 1394328544 source:c:\users\thomas\documents\program\sfmlapp\zoomer.cpp
 	"Zoomer.hpp"
+
+1394347947 c:\users\thomas\documents\program\sfmlapp\zptreader.hpp
+	<SFML/Window.hpp>
+	<SFML/Graphics.hpp>
+	"rapidxml.hpp"
+	<string>
+	<stdio.h>
+	<stdlib.h>
+	<iostream>
+	<fstream>
+	<vector>
+
+1242200778 c:\users\thomas\documents\program\sfmlapp\rapidxml.hpp
+	<cstdlib>
+	<cassert>
+	<new>
+	<exception>
+
+1394349424 source:c:\users\thomas\documents\program\sfmlapp\zptreader.cpp
+	"ZptReader.hpp"
 
