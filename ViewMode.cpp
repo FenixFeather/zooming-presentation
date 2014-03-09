@@ -38,7 +38,7 @@ bool ViewMode::init()
 
      std::cout << zptFile.slides[0].center.x << std::endl;
      
-     zoomer.init(zptFile.slides[0].center, zptFile.slides[0].size);
+     zoomer.init(zptFile.slides[0].center, zptFile.slides[0].size, zptFile.presentationInfo.framerate, zptFile.slides[0].angle);
      
      background.setTexture(backgroundTexture);
 

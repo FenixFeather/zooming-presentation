@@ -29,8 +29,9 @@ public:
       * @param center Center view should start on.
       * @param size Starting view size.
       * @param framerate Framerate in frames per second.
+      * @param angle The starting angle.
       */
-     void init(sf::Vector2f center, sf::Vector2f size, unsigned int framerate=60);
+     void init(sf::Vector2f center, sf::Vector2f size, unsigned int framerate=60, float angle=0);
      
      /**
       * Set the view center manually.

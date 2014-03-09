@@ -24,13 +24,14 @@ Zoomer::Zoomer(sf::Vector2f center, sf::Vector2f size, unsigned int framerate)
      fps = framerate;
 }
 
-void Zoomer::init(sf::Vector2f center, sf::Vector2f size, unsigned int framerate)
+void Zoomer::init(sf::Vector2f center, sf::Vector2f size, unsigned int framerate, float angle)
 {
      //Initialize the view to starting position.
      view.setCenter(center);
      view.setSize(size);
      defaultSize = size;
      fps = framerate;
+     view.setRotation(angle);
 }
 
 void Zoomer::setCenter(sf::Vector2f center)
@@ -88,6 +89,8 @@ sf::View Zoomer::popNextView()
 	       moveQueue.pop();
 	  }
 	  view.setCenter(target);
+	  view.setSize(targetSize);
+	  view.setRotation(targetAngle);
      }
      else{
 	  view.move(nextMove.translationVector);
@@ -140,7 +143,8 @@ std::vector<float> Zoomer::calculateCoordinateTranslations(float finalPosition,
      //Calculate, on average, how many pixels we need to move per
      //frame. If we're smoothing the movement curve, then this will be
      //the maximum instantaneous velocity.
-     float dy = float(speed) / float(fps);
+     int sign = std::abs(finalPosition - initialPosition)/(finalPosition - initialPosition);
+     float dy = float(speed) / float(fps) * sign;
      unsigned int totalYMovesNeeded = 0;
      unsigned int smoothFrames = 0;
      
