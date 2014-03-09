@@ -26,6 +26,10 @@ ViewMode::ViewMode(std::string filePath)
      backgroundPath = zptFile.presentationInfo.imagePath;
 }
 
+ViewMode::~ViewMode()
+{
+}
+
 bool ViewMode::init()
 {
      if (not backgroundTexture.loadFromFile(backgroundPath)){

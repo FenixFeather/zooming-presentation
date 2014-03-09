@@ -16,6 +16,11 @@ public:
       * @param filePath The path to the xml file.
       */
      ViewMode(std::string filePath = "");
+
+     /**
+      * Destroyer for ViewMode.
+      */
+     ~ViewMode();
      
      /**
       * Create the window, sets video mode, loads picture.
