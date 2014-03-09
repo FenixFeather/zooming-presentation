@@ -143,6 +143,10 @@ private:
 		 zoomVector(initialZoomVector) {};
      };
 
+     bool willOvershoot(sf::Vector2f futurePos);
+
+     double distanceBetweenPositions(sf::Vector2f first, sf::Vector2f second);
+     
      /**
       * Populate the moveQueue with ViewMoves.
       */
