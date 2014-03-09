@@ -97,6 +97,7 @@ public:
      void forceViewToTarget();
      
 private:
+     //Properties
      /**
       * Main view.
       */
@@ -154,12 +155,30 @@ private:
 		 zoomVector(initialZoomVector) {};
      };
 
+      /**
+      * Holds ViewMoves.
+      */
+     std::queue<ViewMove> moveQueue;
+
+     //Methods
+
+     /**
+      * Calculates whether the next movement will overshoot the
+      * target.
+      * @return True if it will overshoot, False if not.
+      */
      bool willOvershoot(sf::Vector2f futurePos);
 
+     /**
+      * Calculates the distance between two points in R2.
+      * @return double The distance between the two points.
+      */
      double distanceBetweenPositions(sf::Vector2f first, sf::Vector2f second);
 
      /**
       * Populate the moveQueue with ViewMoves.
+      * @param speed The magnitude of the velocity the camera should
+      * move at.
       */
      void calculateViewMoves(unsigned int speed);
 
@@ -174,16 +193,28 @@ private:
      /**
       * Calculates the individual components of velocity when given
       * just the magnitude
+      * @param speed The magnitude of the velocity the camera should move.
       */
      sf::Vector2f calculateVelocityComponents(unsigned int speed);
      
      /**
-      * Helper function to calculate translations.
+      * Helper function to calculate translations. This function does
+      * most of the work in determining movement, and dictates how
+      * many frames are spent on moving.
+      * @param finalPosition The final position along one direction.
+      * @param initialPosition The initial position along one
+      * direction.
+      * @param speed The speed of the velocity component in this
+      * direction.
+      * @return A vector of instantaneous velocity components to move.
       */
      std::vector<float> calculateCoordinateTranslations(float finalPosition, float initialPosition, unsigned int speed);
      
      /**
       * Helper function to sum a bunch of moves.
+      * @param theVector The vector to sum.
+      * @param start The starting point on the vector.
+      * @param end The ending point on the vector.
       */
      float sumFloatVectorRange(std::vector<float> theVector, size_t start, size_t end);
 
@@ -195,18 +226,22 @@ private:
      
      /**
       * Helper function to calculate how much to rotate each frame.
+      * @param frames The total number of frames of movement.
+      * @param currFrame The current frame in the move animation.
+      * @param degreesToTurn The change in degree from start to end.
+      * @return Instantaneous angular velocity.
       */
      float calculateDTheta(size_t frames, size_t currFrame, float degreesToTurn);
      
      /**
       * Helper function to calculate how much to resize each frame.
+      * @param frames Total time we have to move.
+      * @param currFrame Current point in time.
+      * @return The new size after adding on instantaneous size increase.
       */
      sf::Vector2f calculateNewSize(size_t frames, size_t currFrame);
      
-     /**
-      * Holds ViewMoves.
-      */
-     std::queue<ViewMove> moveQueue;
+    
      
 };
 

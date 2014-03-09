@@ -82,11 +82,6 @@ sf::View Zoomer::popNextView()
      ViewMove nextMove = moveQueue.front();
      //std::cout << nextMove.translationVector.x << "," << nextMove.translationVector.y << std::endl;
 
-     //Peek ahead to make sure we are not overshooting.
-     // if (std::abs(view.getCenter().y + nextMove.translationVector.y - target.y)  (previousView.getCenter().y - target.y > 0) or
-     // 	 (view.getCenter().x + nextMove.translationVector.x - target.x > 0) != (previousView.getCenter().x - target.x > 0)){
-     
-     
      if (not willOvershoot(view.getCenter() + nextMove.translationVector)){
 	  view.move(nextMove.translationVector);
      }
@@ -157,6 +152,7 @@ void Zoomer::calculateViewMoves(unsigned int speed)
      // else if (xMoves.size() > yMoves.size()){
      // 	  yMoves = stretchMoves(yMoves, xMoves.size());
      // }
+     
      //Calculate which way we should turn.
      float deltaTheta = calculateDeltaTheta();
      
@@ -294,8 +290,6 @@ float Zoomer::sumFloatVectorRange(std::vector<float> theVector, size_t start, si
      }
      return result;
 }
-
-// sf::Vector2f sumVelocityVectors(std::vector<float> )
 
 sf::Vector2f Zoomer::calculateNewSize(size_t frames, size_t currFrame)
 {
