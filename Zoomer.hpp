@@ -65,7 +65,11 @@ public:
       * @param percent The percentage of the translation animation
       * that should be smoothed.
       */
-     void setAndCalculateTarget(sf::Vector2f newTarget, unsigned int newSpeed, float percent = 0., float newAngle = 0.);
+     void setAndCalculateTarget(sf::Vector2f newTarget,
+				unsigned int newSpeed,
+				float percent = 0.,
+				float newAngle = 0.,
+				sf::Vector2f newSize = sf::Vector2f(1366,768));
 
      /**
       * Get the next view in the zoomer's queue, presumably to update
@@ -100,6 +104,16 @@ private:
       * Target angle.
       */
      float targetAngle;
+
+     /**
+      * Target size.
+      */
+     sf::Vector2f targetSize;
+
+     /**
+      * Default size. Calculated from the very first view.
+      */
+     sf::Vector2f defaultSize;
      
      /**
       * Holds framerate in FPS
@@ -147,6 +161,11 @@ private:
       * Helper function to calculate how much to rotate each frame.
       */
      float calculateDTheta(size_t frames, size_t currFrame);
+     
+     /**
+      * Helper function to calculate how much to resize each frame.
+      */
+     sf::Vector2f calculateNewSize(size_t frames, size_t currFrame);
      
      /**
       * Holds ViewMoves.

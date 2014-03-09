@@ -20,6 +20,7 @@ Zoomer::Zoomer(sf::Vector2f center, sf::Vector2f size, unsigned int framerate)
      //Initialize the view to starting position.
      view.setCenter(center);
      view.setSize(size);
+     defaultSize = size;
      fps = framerate;
 }
 
@@ -28,6 +29,7 @@ void Zoomer::init(sf::Vector2f center, sf::Vector2f size, unsigned int framerate
      //Initialize the view to starting position.
      view.setCenter(center);
      view.setSize(size);
+     defaultSize = size;
      fps = framerate;
 }
 
@@ -51,14 +53,22 @@ sf::View Zoomer::getCurrentView() const
      return view;
 }
 
-void Zoomer::setAndCalculateTarget(sf::Vector2f newTarget, unsigned int newSpeed, float percent, float newAngle)
+void Zoomer::setAndCalculateTarget(sf::Vector2f newTarget,
+				   unsigned int newSpeed,
+				   float percent,
+				   float newAngle,
+				   sf::Vector2f newSize)
 {
      target = newTarget;
+     
      previousView.setCenter(view.getCenter());
      previousView.setSize(view.getSize());
      previousView.setRotation(view.getRotation());
+
      percentSmooth = percent;
      targetAngle = newAngle;
+     targetSize = newSize;
+     
      calculateViewMoves(newSpeed);
 }
 
@@ -77,7 +87,7 @@ sf::View Zoomer::popNextView()
      else{
 	  view.move(nextMove.translationVector);
 	  view.rotate(nextMove.rotationAngle);
-	  //view.setSize(nextMove.zoomVector);
+	  view.setSize(nextMove.zoomVector);
 	  moveQueue.pop();
      }
      
@@ -105,7 +115,7 @@ void Zoomer::calculateViewMoves(unsigned int speed)
 
      //Push moves onto the queue.
      for (size_t ii = 0; ii < yMoves.size(); ii++){
-	  moveQueue.push(ViewMove(sf::Vector2f(xMoves[ii], yMoves[ii]), calculateDTheta(yMoves.size(), ii), sf::Vector2f(0,0)));
+	  moveQueue.push(ViewMove(sf::Vector2f(xMoves[ii], yMoves[ii]), calculateDTheta(yMoves.size(), ii), calculateNewSize(yMoves.size(), ii)));
      }
 }
 
@@ -185,4 +195,11 @@ float Zoomer::sumFloatVectorRange(std::vector<float> theVector, size_t start, si
 	  result += theVector[ii];
      }
      return result;
+}
+
+sf::Vector2f Zoomer::calculateNewSize(size_t frames, size_t currFrame)
+{
+     float xComponent = (targetSize.x - previousView.getSize().x) / frames * currFrame + previousView.getSize().x;
+     float yComponent = (targetSize.y - previousView.getSize().y) / frames * currFrame + previousView.getSize().y;
+     return sf::Vector2f(xComponent, yComponent);
 }

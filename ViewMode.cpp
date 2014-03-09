@@ -11,8 +11,8 @@
 ViewMode::ViewMode(std::string imagePath = "")
 {
      modes = sf::VideoMode::getFullscreenModes();
-     //window.create(modes[0], "Presentation",sf::Style::Fullscreen);
-     window.create(modes[0], "Presentation");
+     window.create(modes[0], "Presentation",sf::Style::Fullscreen);
+     //window.create(modes[0], "Presentation");
      windowSize = window.getSize();
      window.setFramerateLimit(60);
      backgroundPath = imagePath;
@@ -24,6 +24,7 @@ bool ViewMode::init()
 	  std::cout << "Error loading image." << std::endl;
 	  return false;
      }
+     backgroundTexture.setSmooth(true);
      zoomer.init(sf::Vector2f(2360,3000), sf::Vector2f(windowSize.x, windowSize.y));
      background.setTexture(backgroundTexture);
      return true;
@@ -39,7 +40,8 @@ void ViewMode::run()
 	       }
 	       else if (event.type == sf::Event::MouseButtonPressed){
 		    if (event.mouseButton.button == sf::Mouse::Left){
-			 zoomer.setAndCalculateTarget(sf::Vector2f(2360,4000), 1500, 0.3, -45.);
+			 sf::Vector2f currentSize = zoomer.getCurrentView().getSize();
+			 zoomer.setAndCalculateTarget(sf::Vector2f(2360,4000), 1500, 0.3, -45., sf::Vector2f(currentSize.x * 0.5, currentSize.y * 0.5));
 		    }
 	       }
 	  }
