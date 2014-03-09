@@ -140,13 +140,20 @@ void Zoomer::calculateViewMoves(unsigned int speed)
      std::vector<float> xMoves = calculateCoordinateTranslations(target.x, view.getCenter().x, speed);
 
      //Fill in coordinates so that they match up.
-     while (yMoves.size() > xMoves.size()){
-	  xMoves.push_back(0.);
-     }
-     while (xMoves.size() > yMoves.size()){
-	  yMoves.push_back(0.);
-     }
+     // while (yMoves.size() > xMoves.size()){
+     // 	  xMoves.push_back(0.);
+     // }
+     // while (xMoves.size() > yMoves.size()){
+     // 	  yMoves.push_back(0.);
+     // }
 
+     //Stretch out the movements that are too short.
+     if (yMoves.size() > xMoves.size()){
+	  xMoves = stretchMoves(xMoves, yMoves.size());
+     }
+     else if (xMoves.size() > yMoves.size()){
+	  yMoves = stretchMoves(yMoves, xMoves.size());
+     }
      //Calculate which way we should turn.
      float deltaTheta = calculateDeltaTheta();
      
@@ -156,6 +163,22 @@ void Zoomer::calculateViewMoves(unsigned int speed)
 				  calculateDTheta(yMoves.size(), ii, deltaTheta),
 				  calculateNewSize(yMoves.size(), ii)));
      }
+}
+
+std::vector<float> Zoomer::stretchMoves(std::vector<float>& moves, size_t length)
+{
+     std::vector<float> result(length, 0.);
+     size_t originalMoveSize = moves.size();
+     for (size_t ii = 0; ii < originalMoveSize; ii++){
+	  //Fraction of how far we are through the orignal list.
+	  float fraction = float(ii)/float(originalMoveSize);
+
+	  size_t newPos = size_t(round(fraction * length));
+	  
+	  result[newPos] = moves[ii];
+	  std::cout << result[newPos] << std::endl;
+     }
+     return result;
 }
 
 std::vector<float> Zoomer::calculateCoordinateTranslations(float finalPosition,

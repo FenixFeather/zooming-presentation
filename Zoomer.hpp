@@ -162,6 +162,14 @@ private:
       * Populate the moveQueue with ViewMoves.
       */
      void calculateViewMoves(unsigned int speed);
+
+     /**
+      * Stretch out a list of moves.
+      * @param moves std::vector<float> to stretch.
+      * @param length Length new list should be.
+      * @return A vector of floats of size length.
+      */
+     std::vector<float> stretchMoves(std::vector<float>& moves, size_t length);
      
      /**
       * Helper function to calculate translations.
