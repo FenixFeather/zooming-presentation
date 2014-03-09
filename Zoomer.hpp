@@ -170,6 +170,12 @@ private:
       * @return A vector of floats of size length.
       */
      std::vector<float> stretchMoves(std::vector<float>& moves, size_t length);
+
+     /**
+      * Calculates the individual components of velocity when given
+      * just the magnitude
+      */
+     sf::Vector2f calculateVelocityComponents(unsigned int speed);
      
      /**
       * Helper function to calculate translations.

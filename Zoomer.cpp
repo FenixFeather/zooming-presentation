@@ -135,25 +135,28 @@ void Zoomer::forceViewToTarget()
 
 void Zoomer::calculateViewMoves(unsigned int speed)
 {
+     //Calculate the x and y components of velocity.
+     sf::Vector2f velocity = calculateVelocityComponents(speed);
+     
      //Calculate the translations.
-     std::vector<float> yMoves = calculateCoordinateTranslations(target.y, view.getCenter().y, speed);
-     std::vector<float> xMoves = calculateCoordinateTranslations(target.x, view.getCenter().x, speed);
+     std::vector<float> yMoves = calculateCoordinateTranslations(target.y, view.getCenter().y, velocity.y);
+     std::vector<float> xMoves = calculateCoordinateTranslations(target.x, view.getCenter().x, velocity.x);
 
      //Fill in coordinates so that they match up.
-     // while (yMoves.size() > xMoves.size()){
-     // 	  xMoves.push_back(0.);
-     // }
-     // while (xMoves.size() > yMoves.size()){
-     // 	  yMoves.push_back(0.);
-     // }
+     while (yMoves.size() > xMoves.size()){
+     	  xMoves.push_back(0.);
+     }
+     while (xMoves.size() > yMoves.size()){
+     	  yMoves.push_back(0.);
+     }
 
      //Stretch out the movements that are too short.
-     if (yMoves.size() > xMoves.size()){
-	  xMoves = stretchMoves(xMoves, yMoves.size());
-     }
-     else if (xMoves.size() > yMoves.size()){
-	  yMoves = stretchMoves(yMoves, xMoves.size());
-     }
+     // if (yMoves.size() > xMoves.size()){
+     // 	  xMoves = stretchMoves(xMoves, yMoves.size());
+     // }
+     // else if (xMoves.size() > yMoves.size()){
+     // 	  yMoves = stretchMoves(yMoves, xMoves.size());
+     // }
      //Calculate which way we should turn.
      float deltaTheta = calculateDeltaTheta();
      
@@ -163,6 +166,20 @@ void Zoomer::calculateViewMoves(unsigned int speed)
 				  calculateDTheta(yMoves.size(), ii, deltaTheta),
 				  calculateNewSize(yMoves.size(), ii)));
      }
+}
+
+sf::Vector2f Zoomer::calculateVelocityComponents(unsigned int speed)
+{
+     float velocity = float(speed);
+     sf::Vector2f currentPos = view.getCenter();
+     sf::Vector2f finalPos = target;
+     
+     float hypotenuse = distanceBetweenPositions(finalPos, currentPos);
+     
+     float cosTheta = std::abs((finalPos.x - currentPos.x)/(hypotenuse));
+     float sinTheta = std::abs((finalPos.y - currentPos.y)/hypotenuse);
+
+     return sf::Vector2f(cosTheta * velocity, sinTheta * velocity);
 }
 
 std::vector<float> Zoomer::stretchMoves(std::vector<float>& moves, size_t length)
@@ -187,20 +204,20 @@ std::vector<float> Zoomer::calculateCoordinateTranslations(float finalPosition,
 {
      //Get the total distance we need to travel so we can do
      //calculations properly.
-     int deltaY = std::abs(int(round(finalPosition - initialPosition)));
+     float deltaY = std::abs(((finalPosition - initialPosition)));
      
      //Calculate, on average, how many pixels we need to move per
      //frame. If we're smoothing the movement curve, then this will be
      //the maximum instantaneous velocity.
-     int sign = std::abs(finalPosition - initialPosition)/(finalPosition - initialPosition);
+     float sign = std::abs(finalPosition - initialPosition)/(finalPosition - initialPosition);
      float dy = float(speed) / float(fps);
      unsigned int totalYMovesNeeded = 0;
      unsigned int smoothFrames = 0;
      
      //Find how many total movement vectors we need to produce.
      if (std::abs(dy) > 1){
-	  dy = round(dy);
-	  totalYMovesNeeded = std::abs(deltaY/dy);
+	  dy = (dy);
+	  totalYMovesNeeded = trunc(std::abs(deltaY/dy));
 	  smoothFrames =  (unsigned int)(percentSmooth * totalYMovesNeeded);
      }
      //Else we just move 1 pixel at a time, but over several frames.
@@ -219,7 +236,7 @@ std::vector<float> Zoomer::calculateCoordinateTranslations(float finalPosition,
 
      //Smooth out the first segment.
      for (unsigned int ii=0; ii < smoothFrames; ii++){
-	  yMoves[ii] = round(float(ii)/float(smoothFrames) * dy) * sign;
+	  yMoves[ii] = (float(ii)/float(smoothFrames) * dy) * sign;
 	  //std::cout << yMoves[ii] << std::endl;
      }
 
