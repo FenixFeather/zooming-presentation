@@ -8,6 +8,7 @@
 #include <cmath>
 #include <vector>
 #include <iostream>
+#include <string>
 
 class Zoomer{
 public:
@@ -84,6 +85,16 @@ public:
       * @return True if queue is not empty, false if it is.
       */
      bool hasMoves();
+
+     /**
+      * Clears the move queue.
+      */
+     void cancelMoves();
+
+     /**
+      * Forces the zoomer to move instantly to its current target.
+      */
+     void forceViewToTarget();
      
 private:
      /**
@@ -146,7 +157,7 @@ private:
      bool willOvershoot(sf::Vector2f futurePos);
 
      double distanceBetweenPositions(sf::Vector2f first, sf::Vector2f second);
-     
+
      /**
       * Populate the moveQueue with ViewMoves.
       */

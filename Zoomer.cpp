@@ -80,27 +80,24 @@ void Zoomer::setAndCalculateTarget(sf::Vector2f newTarget,
 sf::View Zoomer::popNextView()
 {
      ViewMove nextMove = moveQueue.front();
-     std::cout << nextMove.translationVector.x << "," << nextMove.translationVector.y << std::endl;
+     //std::cout << nextMove.translationVector.x << "," << nextMove.translationVector.y << std::endl;
 
      //Peek ahead to make sure we are not overshooting.
      // if (std::abs(view.getCenter().y + nextMove.translationVector.y - target.y)  (previousView.getCenter().y - target.y > 0) or
      // 	 (view.getCenter().x + nextMove.translationVector.x - target.x > 0) != (previousView.getCenter().x - target.x > 0)){
-     if (willOvershoot(view.getCenter() + nextMove.translationVector)){
-	  while (not moveQueue.empty()){
-	       moveQueue.pop();
-	  }
-	  std::cout << (target - view.getCenter()).x << "," << (target - view.getCenter()).y << std::endl;
-	  
-	  view.setCenter(target);
-	  view.setSize(targetSize);
-	  view.setRotation(targetAngle);
+     
+     
+     if (not willOvershoot(view.getCenter() + nextMove.translationVector)){
+	  view.move(nextMove.translationVector);
      }
      else{
-	  view.move(nextMove.translationVector);
-	  view.rotate(nextMove.rotationAngle);
-	  view.setSize(nextMove.zoomVector);
-	  moveQueue.pop();
+	  std::cout << "diff pos " << (target - view.getCenter()).x << "," << (target - view.getCenter()).y << std::endl;
+	  std::cout << "diff size " << (targetSize - view.getSize()).x << "," << (targetSize - view.getSize()).y << std::endl;
+	  std::cout << "diff angle " << targetAngle - view.getRotation() << std::endl;
      }
+     view.rotate(nextMove.rotationAngle);
+     view.setSize(nextMove.zoomVector);
+     moveQueue.pop();
      
      return view;
 }
@@ -120,6 +117,20 @@ double Zoomer::distanceBetweenPositions(sf::Vector2f first, sf::Vector2f second)
 bool Zoomer::hasMoves()
 {
      return not moveQueue.empty();
+}
+
+void Zoomer::cancelMoves()
+{
+     while (not moveQueue.empty()){
+	  moveQueue.pop();
+     }
+}
+
+void Zoomer::forceViewToTarget()
+{
+     view.setCenter(target);
+     view.setSize(targetSize);
+     view.setRotation(targetAngle);
 }
 
 void Zoomer::calculateViewMoves(unsigned int speed)
@@ -217,6 +228,9 @@ std::vector<float> Zoomer::calculateCoordinateTranslations(float finalPosition,
 	  yMoves[ii] = (dy - (round(animationPercentage * dy))) * sign;
 	  //std::cout << yMoves[ii] << std::endl;
      }
+
+     // sf::Vector2f displacementVector = sumVelocityVectors(yMoves);
+     
      return yMoves;
 }
 
@@ -240,6 +254,8 @@ float Zoomer::sumFloatVectorRange(std::vector<float> theVector, size_t start, si
      }
      return result;
 }
+
+// sf::Vector2f sumVelocityVectors(std::vector<float> )
 
 sf::Vector2f Zoomer::calculateNewSize(size_t frames, size_t currFrame)
 {

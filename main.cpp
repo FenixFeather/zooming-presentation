@@ -9,9 +9,9 @@
 #include "AbstractMode.hpp"
 #include "ViewMode.hpp"
 
-int main()
+int main(int argc, char* argv[])
 {
-     AbstractMode* viewWindow = new ViewMode("file.xml");
+     AbstractMode* viewWindow = new ViewMode(argc > 1 ? argv[1] : "sample.xpt");
      viewWindow->init();
      viewWindow->run();
      delete viewWindow;
