@@ -8,7 +8,7 @@
 
 #include "ViewMode.hpp"
 
-ViewMode::ViewMode(std::string filePath = "")
+ViewMode::ViewMode(std::string filePath)
 {
      if(not zptFile.parseFile(filePath)){
 	  std::cout << "Error opening file." << std::endl;
@@ -35,12 +35,14 @@ bool ViewMode::init()
      backgroundTexture.setSmooth(true);
      //zoomer.init(sf::Vector2f(2360,3000), sf::Vector2f(windowSize.x,
      //windowSize.y));
+
+     std::cout << zptFile.slides[0].center.x << std::endl;
      
      zoomer.init(zptFile.slides[0].center, zptFile.slides[0].size);
      
      background.setTexture(backgroundTexture);
 
-     currentSlideNumber = 0;
+     currentSlideNumber = 1;
      
      return true;
 }

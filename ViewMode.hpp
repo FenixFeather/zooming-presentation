@@ -15,7 +15,7 @@ public:
       * Constructor for ViewMode. Initializes member variables.
       * @param filePath The path to the xml file.
       */
-     ViewMode(std::string filePath);
+     ViewMode(std::string filePath = "");
      
      /**
       * Create the window, sets video mode, loads picture.

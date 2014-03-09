@@ -11,7 +11,7 @@
 
 int main()
 {
-     AbstractMode* viewWindow = new ViewMode("test.xml");
+     AbstractMode* viewWindow = new ViewMode("file.xml");
      viewWindow->init();
      viewWindow->run();
      delete viewWindow;

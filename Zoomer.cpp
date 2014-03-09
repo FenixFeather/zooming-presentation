@@ -68,6 +68,10 @@ void Zoomer::setAndCalculateTarget(sf::Vector2f newTarget,
      percentSmooth = percent;
      targetAngle = newAngle;
      targetSize = newSize;
+
+     while(not moveQueue.empty()){
+	  moveQueue.pop();
+     }
      
      calculateViewMoves(newSpeed);
 }
