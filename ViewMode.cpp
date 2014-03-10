@@ -54,7 +54,7 @@ void ViewMode::createWindow()
 	       resolution.y -= 100;
 	  }
 	  window.create(sf::VideoMode(resolution.x, resolution.y), windowTitle);
-	  return;
+	  
      }
      else{
 	  //window.create(modes[0], windowTitle, sf::Style::Fullscreen);
@@ -62,6 +62,7 @@ void ViewMode::createWindow()
 	  //window.setVerticalSyncEnabled(true);
 	  aspectDifference = compareAspectRatios(sf::Vector2f(desktop.width, desktop.height), resolution);
      }
+     window.setMouseCursorVisible(false);
 }
 
 float ViewMode::compareAspectRatios(sf::Vector2f first, sf::Vector2f second)
