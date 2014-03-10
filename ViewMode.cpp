@@ -20,11 +20,11 @@ ViewMode::ViewMode(std::string filePath, bool windowedMode)
      
      std::string title = zptFile.presentationInfo.presentationTitle;
 
-     std::string windowTitle = title + " - " + filePath;
+     windowTitle = title + " - " + filePath;
 
      windowed = windowedMode;
 
-     createWindow(windowTitle);
+     createWindow();
      
      // if (zptFile.presentationInfo.prefSize.x == modes[0].width and zptFile.presentationInfo.prefSize.y == modes[0].height){
 	  
@@ -42,7 +42,7 @@ ViewMode::~ViewMode()
 {
 }
 
-void ViewMode::createWindow(std::string windowTitle)
+void ViewMode::createWindow()
 {
      desktop = sf::VideoMode::getDesktopMode();
 
@@ -59,6 +59,7 @@ void ViewMode::createWindow(std::string windowTitle)
      else{
 	  //window.create(modes[0], windowTitle, sf::Style::Fullscreen);
 	  window.create(sf::VideoMode(desktop.width, desktop.height), windowTitle, sf::Style::Fullscreen);
+	  //window.setVerticalSyncEnabled(true);
 	  aspectDifference = compareAspectRatios(sf::Vector2f(desktop.width, desktop.height), resolution);
      }
 }
@@ -124,6 +125,13 @@ void ViewMode::run()
 		    {
 			 window.close();
 		    }
+		    if (event.key.code == sf::Keyboard::Return)
+		    {
+			 if (sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt)){
+			      windowed = not windowed;
+			      createWindow();
+			 }
+		    }
 	       }
 	  }
 	  
@@ -159,8 +167,9 @@ void ViewMode::processView()
      float desktopAspectRatio = desktop.width / desktop.height;
      
      if (aspectDifference < 0){
+	  const sf::View* windowView = &window.getView();
 	  
-	  sf::Vector2f tempSize = window.getView().getSize();
+	  sf::Vector2f tempSize = windowView->getSize();
 
 	  float oldHeight = tempSize.y;
 	  
@@ -171,14 +180,14 @@ void ViewMode::processView()
 	  float newFraction = (tempSize.y - oldHeight)/tempSize.y;
 
 	  //Make the new view.
-	  sf::View newView(window.getView().getCenter(), tempSize);
+	  sf::View newView(windowView->getCenter(), tempSize);
 	  
 	  //The viewport is a rectangle with coordinates at 0, half
 	  //the fraction that are extra, width full, and reduce the
 	  //extra height.
 	  sf::FloatRect viewPort(0, newFraction/2, 1, 1 - newFraction);//1 - newFraction/2);
 
-	  newView.setRotation(window.getView().getRotation());
+	  newView.setRotation(windowView->getRotation());
 	  
 	  //newView.setViewport(viewPort);
 	  

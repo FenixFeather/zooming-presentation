@@ -45,7 +45,7 @@ private:
       * @brief Handles the processing for window creation.
       * @param windowTitle The title for the window.
       */
-     void createWindow(std::string windowTitle);
+     void createWindow();
 
      /**
       * @brief Tests aspect ratios for difference.
@@ -127,6 +127,11 @@ private:
       * @brief Keeps track of the desktop.
       */
      sf::VideoMode desktop;
+
+     /**
+      * @brief Keeps track of the Window Title.
+      */
+     std::string windowTitle;
 };
 
 
