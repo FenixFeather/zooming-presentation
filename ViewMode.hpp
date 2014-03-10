@@ -12,10 +12,12 @@
 class ViewMode : public AbstractMode{
 public:
      /**
-      * Constructor for ViewMode. Initializes member variables.
+      * @brief Constructor for ViewMode.
+      * Initializes member variables.
       * @param filePath The path to the xml file.
+      * @param windowedMode
       */
-     ViewMode(std::string filePath = "");
+     ViewMode(std::string filePath = "", bool windowedMode=false);
 
      /**
       * Destroyer for ViewMode.
@@ -39,6 +41,28 @@ public:
      void close();
      
 private:
+     /**
+      * @brief Handles the processing for window creation.
+      * @param windowTitle The title for the window.
+      */
+     void createWindow(std::string windowTitle);
+
+     /**
+      * @brief Tests aspect ratios for difference.
+      * @param first The first vector.
+      * @param second The second vector.
+      * @return 0 if they have the same aspect ratio, first - second
+      * if they have different aspect ratios.
+      */
+     float compareAspectRatios(sf::Vector2f first, sf::Vector2f second);
+
+     /**
+      * @brief Helps keep the view aspect ratio consistent.
+      * Puts black bars to help maintain consistent view across
+      * different setups.
+      */
+     void processView();
+     
      /**
       * Holds a list of all fullscreen video modes.
       */
@@ -88,6 +112,21 @@ private:
       * Keeps track of the current slide number.
       */
      unsigned int currentSlideNumber;
+
+     /**
+      * @brief Keeps track of whether the window is windowed.
+      */
+     bool windowed;
+
+     /**
+      * @brief Keeps track of difference in aspect ratio.
+      */
+     float aspectDifference;
+
+     /**
+      * @brief Keeps track of the desktop.
+      */
+     sf::VideoMode desktop;
 };
 
 

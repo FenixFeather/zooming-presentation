@@ -1,7 +1,8 @@
 # depslib dependency file v1.0
-1394402141 source:c:\users\thomas\documents\program\sfmlapp\main.cpp
+1394418837 source:c:\users\thomas\documents\program\sfmlapp\main.cpp
 	<iostream>
 	<vector>
+	<string>
 	<SFML/Window.hpp>
 	<SFML/Graphics.hpp>
 	"AbstractMode.hpp"
@@ -9,7 +10,7 @@
 
 1394408556 c:\users\thomas\documents\program\sfmlapp\abstractmode.hpp
 
-1394408390 c:\users\thomas\documents\program\sfmlapp\viewmode.hpp
+1394424769 c:\users\thomas\documents\program\sfmlapp\viewmode.hpp
 	"AbstractMode.hpp"
 	<vector>
 	<iostream>

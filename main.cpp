@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <vector>
+#include <string>
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 #include "AbstractMode.hpp"
@@ -11,7 +12,8 @@
 
 int main(int argc, char* argv[])
 {
-     AbstractMode* viewWindow = new ViewMode(argc > 1 ? argv[1] : "sample.xpt");
+     AbstractMode* viewWindow = new ViewMode(argc > 1 ? argv[1] : "sample.xpt",
+					     (argc > 2 and std::string(argv[2]) == "-w"));
      viewWindow->init();
      viewWindow->run();
      delete viewWindow;

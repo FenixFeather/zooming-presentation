@@ -8,22 +8,30 @@
 
 #include "ViewMode.hpp"
 
-ViewMode::ViewMode(std::string filePath)
+ViewMode::ViewMode(std::string filePath, bool windowedMode)
 {
      if(not zptFile.parseFile(filePath)){
 	  std::cout << "Error opening file." << std::endl;
      }
+     
      modes = sf::VideoMode::getFullscreenModes();
+
+     aspectDifference = 0;
+     
      std::string title = zptFile.presentationInfo.presentationTitle;
 
      std::string windowTitle = title + " - " + filePath;
+
+     windowed = windowedMode;
+
+     createWindow(windowTitle);
      
-     if (zptFile.presentationInfo.prefSize.x == modes[0].width and zptFile.presentationInfo.prefSize.y == modes[0].height){
-	  window.create(modes[0], windowTitle, sf::Style::Fullscreen);
-     }
-     else{
-	  window.create(sf::VideoMode((unsigned int)zptFile.presentationInfo.prefSize.x, (unsigned int)zptFile.presentationInfo.prefSize.y), windowTitle);
-     }
+     // if (zptFile.presentationInfo.prefSize.x == modes[0].width and zptFile.presentationInfo.prefSize.y == modes[0].height){
+	  
+     // }
+     // else{
+	  
+     // }
      
      windowSize = window.getSize();
      window.setFramerateLimit(zptFile.presentationInfo.framerate);
@@ -32,6 +40,33 @@ ViewMode::ViewMode(std::string filePath)
 
 ViewMode::~ViewMode()
 {
+}
+
+void ViewMode::createWindow(std::string windowTitle)
+{
+     desktop = sf::VideoMode::getDesktopMode();
+
+     sf::Vector2f resolution = zptFile.presentationInfo.prefSize;
+     
+     if (windowed){
+	  while (resolution.x > desktop.width or resolution.y > desktop.height){
+	       resolution.x -= 100;
+	       resolution.y -= 100;
+	  }
+	  window.create(sf::VideoMode(resolution.x, resolution.y), windowTitle);
+	  return;
+     }
+     else{
+	  //window.create(modes[0], windowTitle, sf::Style::Fullscreen);
+	  window.create(sf::VideoMode(desktop.width, desktop.height), windowTitle, sf::Style::Fullscreen);
+	  aspectDifference = compareAspectRatios(sf::Vector2f(desktop.width, desktop.height), resolution);
+     }
+}
+
+float ViewMode::compareAspectRatios(sf::Vector2f first, sf::Vector2f second)
+{
+     if (std::abs((first.x/first.y) - (second.x/second.y)) < 0.01) return 0;
+     return (first.x/first.y) - (second.x/second.y);
 }
 
 bool ViewMode::init()
@@ -107,8 +142,50 @@ void ViewMode::run()
 	  else{
 	       window.setView(zoomer.getCurrentView());
 	  }
-	  
+
+	  if (not windowed and aspectDifference != 0){
+	       processView();
+	  }
 	  window.display();
+     }
+}
+
+void ViewMode::processView()
+{
+     //If the screen is less wide than the desired rectangle shape,
+     //we're gonna need to expand the view to fit the same aspect
+     //ratio as the screen, but add black bars to hide the extra.
+
+     float desktopAspectRatio = desktop.width / desktop.height;
+     
+     if (aspectDifference < 0){
+	  
+	  sf::Vector2f tempSize = window.getView().getSize();
+
+	  float oldHeight = tempSize.y;
+	  
+	  //Increase the vertical view.
+	  tempSize.y = tempSize.x / (desktopAspectRatio);
+	  
+	  //Fraction of pixels that are new (and therefore extra).
+	  float newFraction = (tempSize.y - oldHeight)/tempSize.y;
+
+	  //Make the new view.
+	  sf::View newView(window.getView().getCenter(), tempSize);
+	  
+	  //The viewport is a rectangle with coordinates at 0, half
+	  //the fraction that are extra, width full, and reduce the
+	  //extra height.
+	  sf::FloatRect viewPort(0, newFraction/2, 1, 1 - newFraction);//1 - newFraction/2);
+
+	  newView.setRotation(window.getView().getRotation());
+	  
+	  //newView.setViewport(viewPort);
+	  
+	  window.setView(newView);
+     }
+     else if (aspectDifference > 0){
+	  
      }
 }
 
