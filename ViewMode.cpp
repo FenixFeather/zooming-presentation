@@ -58,7 +58,7 @@ void ViewMode::createWindow()
      }
      else{
 	  //window.create(modes[0], windowTitle, sf::Style::Fullscreen);
-	  window.create(sf::VideoMode(desktop.width, desktop.height), windowTitle, sf::Style::Fullscreen);
+	  window.create(sf::VideoMode(desktop.width, desktop.height, desktop.bitsPerPixel), windowTitle, sf::Style::Fullscreen);
 	  //window.setVerticalSyncEnabled(true);
 	  aspectDifference = compareAspectRatios(sf::Vector2f(desktop.width, desktop.height), resolution);
      }
@@ -191,11 +191,31 @@ void ViewMode::processView()
 	  newView.setRotation(windowView->getRotation());
 	  
 	  //newView.setViewport(viewPort);
-	  
 	  window.setView(newView);
      }
      else if (aspectDifference > 0){
+	  const sf::View* windowView = &window.getView();
 	  
+	  sf::Vector2f tempSize = windowView->getSize();
+
+	  float oldHeight = tempSize.x;
+	  
+	  //Increase the horizontal view.
+	  tempSize.x = tempSize.y / (desktopAspectRatio);
+	  
+	  //Fraction of pixels that are new (and therefore extra).
+	  float newFraction = (tempSize.x - oldHeight)/tempSize.x;
+
+	  //Make the new view.
+	  sf::View newView(windowView->getCenter(), tempSize);
+	  
+	  //The viewport is a rectangle with coordinates at 0, half
+	  //the fraction that are extra, width full, and reduce the
+	  //extra height.
+	  //sf::FloatRect viewPort(0, newFraction/2, 1, 1 - newFraction);//1 - newFraction/2);
+
+	  newView.setRotation(windowView->getRotation());
+	  window.setView(newView);
      }
 }
 
