@@ -14,11 +14,15 @@ ViewMode::ViewMode(std::string filePath)
 	  std::cout << "Error opening file." << std::endl;
      }
      modes = sf::VideoMode::getFullscreenModes();
+     std::string title = zptFile.presentationInfo.presentationTitle;
+
+     std::string windowTitle = title + " - " + filePath;
+     
      if (zptFile.presentationInfo.prefSize.x == modes[0].width and zptFile.presentationInfo.prefSize.y == modes[0].height){
-	  window.create(modes[0], filePath, sf::Style::Fullscreen);
+	  window.create(modes[0], windowTitle, sf::Style::Fullscreen);
      }
      else{
-	  window.create(sf::VideoMode((unsigned int)zptFile.presentationInfo.prefSize.x, (unsigned int)zptFile.presentationInfo.prefSize.y), filePath);
+	  window.create(sf::VideoMode((unsigned int)zptFile.presentationInfo.prefSize.x, (unsigned int)zptFile.presentationInfo.prefSize.y), windowTitle);
      }
      
      windowSize = window.getSize();

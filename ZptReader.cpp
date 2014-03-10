@@ -49,6 +49,7 @@ namespace zpt
 	  rootNode = doc.first_node("presentation");
 
 	  rapidxml::xml_node<>* metaNode = rootNode->first_node("Metadata");
+	  presentationInfo.presentationTitle = std::string(metaNode->first_node("Title")->value());
 	  presentationInfo.imagePath = std::string(metaNode->first_node("ImagePath")->value());
 	  presentationInfo.framerate = atoi(metaNode->first_node("Framerate")->value());
 	  float x = atof((metaNode->first_node("PreferredSize")->first_attribute("x")->value()));

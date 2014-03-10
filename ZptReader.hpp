@@ -36,6 +36,7 @@ namespace zpt
 	   * Struct for holding presentation information.
 	   */
 	  struct Metadata{
+	       std::string presentationTitle;
 	       std::string imagePath;
 	       unsigned int framerate;
 	       sf::Vector2f prefSize;

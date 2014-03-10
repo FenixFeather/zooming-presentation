@@ -8,6 +8,7 @@
 		<Build>
 			<Target title="Debug">
 				<Option output="bin/Debug/sfmlapp" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="bin/Debug/" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -16,9 +17,9 @@
 				</Compiler>
 			</Target>
 			<Target title="Release">
-				<Option output="bin/Release/sfmlapp" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Release/zoom" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
-				<Option type="1" />
+				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O2" />
@@ -31,11 +32,29 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="AbstractMode.hpp" />
+		<Unit filename="ViewMode.cpp" />
+		<Unit filename="ViewMode.hpp" />
+		<Unit filename="Zoomer.cpp" />
+		<Unit filename="Zoomer.hpp" />
+		<Unit filename="ZptReader.cpp" />
+		<Unit filename="ZptReader.hpp" />
+		<Unit filename="main.cpp" />
+		<Unit filename="rapidxml.hpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />
 			<debugger />
 			<lib_finder disable_auto="1" />
+			<DoxyBlocks>
+				<comment_style block="1" line="2" />
+				<doxyfile_project />
+				<doxyfile_build />
+				<doxyfile_warnings />
+				<doxyfile_output />
+				<doxyfile_dot />
+				<general use_at_in_tags="1" />
+			</DoxyBlocks>
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>
