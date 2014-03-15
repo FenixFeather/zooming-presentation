@@ -167,56 +167,39 @@ void ViewMode::processView()
 
      float desktopAspectRatio = desktop.width / desktop.height;
      
-     if (aspectDifference < 0){
-	  const sf::View* windowView = &window.getView();
-	  
-	  sf::Vector2f tempSize = windowView->getSize();
 
-	  float oldHeight = tempSize.y;
+     const sf::View& windowView = window.getView();
 	  
-	  //Increase the vertical view.
-	  tempSize.y = tempSize.x / (desktopAspectRatio);
-	  
-	  //Fraction of pixels that are new (and therefore extra).
-	  float newFraction = (tempSize.y - oldHeight)/tempSize.y;
+     sf::Vector2f tempSize = windowView.getSize();
 
-	  //Make the new view.
-	  sf::View newView(windowView->getCenter(), tempSize);
-	  
-	  //The viewport is a rectangle with coordinates at 0, half
-	  //the fraction that are extra, width full, and reduce the
-	  //extra height.
-	  sf::FloatRect viewPort(0, newFraction/2, 1, 1 - newFraction);//1 - newFraction/2);
-
-	  newView.setRotation(windowView->getRotation());
-	  
-	  //newView.setViewport(viewPort);
-	  window.setView(newView);
+     float& dimensionToIncrease = tempSize.y;
+     float& otherDimension = tempSize.x;
+     
+     if (aspectDifference > 0){
+	  float& dimensionToIncrease = tempSize.x;
+	  float& otherDimension = tempSize.y;
      }
-     else if (aspectDifference > 0){
-	  const sf::View* windowView = &window.getView();
+     float oldHeight = dimensionToIncrease;
 	  
-	  sf::Vector2f tempSize = windowView->getSize();
+     //Increase the vertical view.
+     dimensionToIncrease = otherDimension / (desktopAspectRatio);
+	  
+     //Fraction of pixels that are new (and therefore extra).
+     // float newFraction = (dimensionToIncrease - oldHeight)/dimensionToIncrease;
 
-	  float oldHeight = tempSize.x;
+     //Make the new view.
+     sf::View newView(windowView.getCenter(), tempSize);
 	  
-	  //Increase the horizontal view.
-	  tempSize.x = tempSize.y / (desktopAspectRatio);
-	  
-	  //Fraction of pixels that are new (and therefore extra).
-	  float newFraction = (tempSize.x - oldHeight)/tempSize.x;
+     //The viewport is a rectangle with coordinates at 0, half
+     //the fraction that are extra, width full, and reduce the
+     //extra height.
+     //sf::FloatRect viewPort(0, newFraction/2, 1, 1 - newFraction);//1 - newFraction/2);
 
-	  //Make the new view.
-	  sf::View newView(windowView->getCenter(), tempSize);
+     newView.setRotation(windowView.getRotation());
 	  
-	  //The viewport is a rectangle with coordinates at 0, half
-	  //the fraction that are extra, width full, and reduce the
-	  //extra height.
-	  //sf::FloatRect viewPort(0, newFraction/2, 1, 1 - newFraction);//1 - newFraction/2);
+     //newView.setViewport(viewPort);
+     window.setView(newView);
 
-	  newView.setRotation(windowView->getRotation());
-	  window.setView(newView);
-     }
 }
 
 void ViewMode::close()
